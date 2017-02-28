@@ -1,0 +1,54 @@
+{if $form.error}
+      <div class="error_message">
+      <strong>エラーが発生しました</strong><br>
+  {foreach from=$form.error_message item=error_message}
+        ・&nbsp;{$error_message}<br>
+  {/foreach}
+      </div>
+{/if}
+      <div id="main_contents_detail">
+        <table class="detail">
+          <form name="form1" method="post" action="{$url_upd}" {if $view_alert && (!$view_confirm || $form.read_only)}onSubmit="return confirm('更新します。よろしいですか？');"{/if}>
+          <input type="hidden" name="{$key_name|escape:"html"}" value="{$key_value|escape:"html"}" />
+          <input type="hidden" name="adm_read_only" value="{$read_only|escape:"html"}" />
+          <input type="hidden" name="adm_u" value="{$cuu|escape:"html"}" />
+{foreach from=$form.elements item=element}
+  {if $element.cols == '0'}
+          <tr>
+            <th>{$element.label} {if $element.require}<span style="color: #CC0000">*</font>{/if}</th>
+            <td>{$element.html}&nbsp;</td>
+  {elseif $element.cols == '1'}
+            <th>{$element.label} {if $element.require}<span style="color: #CC0000">*</font>{/if}</th>
+            <td>{$element.html}&nbsp;</td>
+          </tr>
+  {elseif $element.cols == '2'}
+          <tr>
+            <th>{$element.label} {if $element.require}<span style="color: #CC0000">*</font>{/if}</th>
+            <td colspan="3">{$element.html}&nbsp;</td>
+          </tr>
+  {/if}
+{/foreach}
+          <tr>
+            <td colspan="4" style="text-align: right;">
+{if $form.read_only}{* 確認画面 *}
+              <input type="submit" name="adm_action_exe" value="更新実行" />
+              <input type="submit" name="adm_action_prev" value="　戻る　" />
+{elseif !$view_confirm}{* 入力画面（確認画面無し） *}
+              <input type="submit" name="adm_action_exe" value="更新実行" />
+{else}{* 入力画面（確認画面あり） *}
+              <input type="submit" name="adm_action_next" value="確認画面へ" />
+{/if}
+            &nbsp;</td>
+          </tr>
+          </form>
+        </table>
+      </div>
+
+      <div style="padding: 20px; text-align: center;">
+{if $url_lst == $url_lst_u}
+        <a href="{$url_lst}">一覧に戻る</a>
+{else}
+        <a href="{$url_lst_u}&adm_u={$cu|escape:"url"}">一覧に戻る</a>
+{/if}
+      </div>
+

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE syl-components PUBLIC
+  "-//SyL Framework Development Project//DTD Components Defines 1.0//JP"
+  "http://syl.jp/dtds/syl-components_1_0.dtd">
+
+<!--
+  コンポーネント設定ファイル（components.xml）
+
+  フレームワーク初期化時に読み込むコンポーネントを定義します。
+  これは、プロジェクト全体に影響します。
+  初期設定から変更する必要性はありません。
+
+  任意のコンポーネントの追加は可能です。
+-->
+<syl-components>
+
+<component name="logfile"
+           class="SyL_Logger"
+           reference="true"
+           file="framework/SyL_Logger.php"
+           priority="1">
+  <constructor static="getLogger">
+    <arg>file</arg>
+  </constructor>
+  <method name="open">
+    <arg type="constant">SYL_LOG_FILE</arg>
+  </method>
+</component>
+
+<component name="log"
+           class="SyL_Loggers"
+           reference="true"
+           file="framework/SyL_Loggers.php"
+           priority="2">
+  <constructor static="singleton" />
+
+  <setter name="logger" direct="false">
+    <arg type="component" reference="true">logfile</arg>
+  </setter>
+  <method name="close" event="finalStream" />
+</component>
+
+<component name="response"
+           class="SyL_Response" 
+           reference="true"
+           file="framework/SyL_Response.php"
+           priority="3">
+  <constructor static="singleton" />
+  <method name="display" event="renderStream">
+    <arg type="component" reference="true">view</arg>
+  </method>
+</component>
+
+<component name="error"
+           class="SyL_Error"
+           reference="true"
+           file="framework/SyL_Error.php"
+           priority="4">
+  <constructor static="getInstance" />
+  <setter name="controller" direct="false">
+    <arg type="component" reference="true">controller</arg>
+  </setter>
+  <method name="setErrorHandler" />
+  <method name="errorHandler" event="errorStream" />
+</component>
+
+<component name="data"
+           class="SyL_Data" 
+           reference="true"
+           file="framework/SyL_Data.php"
+           priority="5">
+  <constructor static="getInstance" />
+</component>
+
+<component name="context"
+           class="SyL_Context"
+           reference="true"
+           file="framework/SyL_Context.php"
+           priority="6">
+  <constructor static="getInstance">
+    <arg type="component" reference="true">controller</arg>
+    <arg type="component" reference="true">data</arg>
+  </constructor>
+</component>
+
+<component name="view"
+           class="SyL_View" 
+           file="framework/SyL_View.php"
+           reference="true"
+           event="renderStream"
+           priority="1">
+  <constructor static="getObject">
+    <arg type="component" reference="true">context</arg>
+    <arg type="component" reference="true">data</arg>
+  </constructor>
+  <method name="render" />
+</component>
+
+</syl-components>

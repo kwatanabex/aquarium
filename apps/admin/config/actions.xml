@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE syl-actions PUBLIC
+  "-//SyL Framework Development Project//DTD Action Defines 1.0//JP"
+  "http://syl.jp/dtds/syl-actions_1_0.dtd">
+
+<!--
+  アクション設定ファイル（actions.xml）
+
+  リクエスト時のURLから、どのアクションを実行するのかを設定し、
+  そのアクションに対応したテンプレートファイルや、ビュータイプも指定します。
+-->
+<syl-actions>
+
+<action path="(.+)\.php"
+        method="execute{action}">
+</action>
+
+</syl-actions>

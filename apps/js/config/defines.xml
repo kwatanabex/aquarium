@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE syl-defines PUBLIC
+  "-//SyL Framework Development Project//DTD Constant Defines 1.0//JP"
+  "http://syl.jp/dtds/syl-defines_1_0.dtd">
+
+<syl-defines>
+  <!-- PATHINFO上のURL拡張子 -->
+  <define name="SYL_ROUTER_URL_EXT">.js</define>
+  <define name="SYL_ERROR_URL_404"></define>
+</syl-defines>

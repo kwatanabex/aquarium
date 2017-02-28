@@ -1,0 +1,13 @@
+<div id="main_contents_index">
+  <h2>{$aq_title}のメニューインデックス</h2>
+{foreach from=$aq_menu_index item=menu}
+  {if $menu.0 >= 0}
+  <div class="list_box">
+    <h4><a href="{$menu.3}">{$menu.2}</a></h4>
+    <p>{$menu.4}</p>
+  </div>
+  {/if}
+{/foreach}
+
+</div>
+

@@ -1,0 +1,216 @@
+
+<script type="text/javascript">
+<!--
+var url_script = "{$url_script}";
+{literal}
+
+function checkTables(f)
+{
+  if (f.elements['an'].value == '') {
+    f.elements['an'].focus();
+    f.elements['an'].select();
+    alert("ADM名を入力してください");
+    return false;
+  } else if (f.elements['an'].value.length > 50) {
+    f.elements['an'].focus();
+    f.elements['an'].select();
+    alert("ADM名は、50文字（バイト）以内で入力してください");
+    return false;
+  }
+
+  if (f.elements['mt[]'].options[f.elements['mt[]'].selectedIndex].value == '') {
+    f.elements['mt[]'].focus();
+    alert("メンテナンスADMテーブルを選択してください");
+    return false;
+  }
+
+  var fi = 1;
+  while (f.elements['rt' + fi]) {
+    if (f.elements['rt' + fi].options[f.elements['rt' + fi].selectedIndex].value != '') {
+      if (f.elements['rtcth' + fi].value == '') {
+        alert("結合条件が選択されていません");
+        return false;
+      }
+    }
+    fi++;
+  }
+
+  return confirm("チェックしたメンテナンスADMテーブルをADM管理用のメタデータとして登録します。\nよろしいですか？");
+}
+
+function relationRegisterChange()
+{
+  if (document.getElementById('relation_tables').style.display == 'none') {
+    document.getElementById('relation_tables').style.display = 'block';
+  }
+}
+
+function setTableColumnList(r)
+{
+  //var index = r['index'];
+  var len  = r['tids'];
+  var name = r['name'];
+
+  var f = document.form_detail;
+
+  if (name == 'mt[]') {
+    var fi = 1;
+    while (f.elements['mtc' + fi]) {
+      f.elements['mtc' + fi].length = 0;
+      clearTableJoin(fi);
+
+      var i=0;
+      for (var id in r['tids']) {
+        if (i == 0) {
+          f.elements['mtc' + fi].options[i++] = new Option('-- 選択してください --', '');
+        }
+        f.elements['mtc' + fi].options[i++] = new Option(r['tids'][id], id);
+      }
+
+      if (f.elements['mtc' + fi].length == 0) {
+        f.elements['mtc' + fi].options[0] = new Option('-- メンテナンスADMテーブルを選択してください --', '');
+      }
+      fi++;
+    }
+  } else if (name.match(/^rt(\d)$/)) {
+    var ename = 'rtc' + RegExp.$1;
+    f.elements[ename].length = 0;
+    clearTableJoin(RegExp.$1);
+
+    var i=0;
+    for (var id in r['tids']) {
+      if (i == 0) {
+        f.elements[ename].options[i++] = new Option('-- 選択してください --', '');
+      }
+      f.elements[ename].options[i++] = new Option(r['tids'][id], id);
+    }
+
+    if (f.elements[ename].length == 0) {
+      f.elements[ename].options[0] = new Option('-- 結合テーブルを選択してください --', '');
+    }
+  }
+}
+
+function addTableJoin(num)
+{
+  var f = document.form_detail;
+  var ename1 = 'mtc'  + num;
+  var ename2 = 'rtc'  + num;
+  var fname  = 'rtct' + num;
+
+  var column1 = f.elements[ename1].options[f.elements[ename1].selectedIndex].text;
+  var column2 = f.elements[ename2].options[f.elements[ename2].selectedIndex].text;
+  var value1  = f.elements[ename1].options[f.elements[ename1].selectedIndex].value;
+  var value2  = f.elements[ename2].options[f.elements[ename2].selectedIndex].value;
+
+  if (value1 == '') {
+    alert('メンテナンスADMテーブルのカラムが選択されていません');
+    return;
+  }
+  if (value2 == '') {
+    alert('結合テーブルのカラムが選択されていません');
+    return;
+  }
+
+  var table1 = f.elements['mt[]'].options[f.elements['mt[]'].selectedIndex].text;
+  var table2 = f.elements['rt' + num].options[f.elements['rt' + num].selectedIndex].text;
+
+  var joindata = table1 + '.' + column1 + ' = ' + table2 + '.' + column2;
+
+  if (f.elements['rtcth' + num].value != '') {
+    f.elements['rtcth' + num].value = f.elements['rtcth' + num].value + '\n' + joindata;
+  } else {
+    f.elements['rtcth' + num].value = joindata;
+  }
+
+  document.getElementById(fname).style.display = 'block';
+  if (document.getElementById(fname).innerHTML) {
+    document.getElementById(fname).innerHTML = document.getElementById(fname).innerHTML + '<br />' + joindata;
+  } else {
+    document.getElementById(fname).innerHTML = joindata;
+  }
+}
+
+function clearTableJoin(num)
+{
+  document.getElementById('rtct' + num).innerHTML     = '';
+  document.getElementById('rtct' + num).style.display = 'none';
+  document.form_detail.elements['rtcth' + num].value  = '';
+}
+
+{/literal}
+
+//-->
+</script>
+
+      <form name="form_detail" method="post" onSubmit="return checkTables(this);">
+
+      <div class="main_contents_list">
+{if count($cnt) > 0}
+  {if $form.error}
+        <div class="error_message">
+        <strong>エラーが発生しました</strong><br />
+    {foreach from=$form.error_message item=message}
+          ・&nbsp;{$message}<br />
+    {/foreach}
+        </div>
+  {/if}
+        <table class="detail">
+          <tr>
+            <th style="color: #FFFFFF;">{$form.elements.an.label} <span style="color: #CC0000">*</font></th>
+            <td>{$form.elements.an.html}<br /><span class="note">※既に登録している名前は使用できません</span></td>
+            <th style="color: #FFFFFF;">{$form.elements.mt.label} <span style="color: #CC0000">*</font></th>
+            <td>{$form.elements.mt.html}</td>
+          </tr>
+        </table>
+        <br />
+
+        <div id="relation_register" style="padding: 3px 0px;"><a href="javascript: void(0);" onClick="relationRegisterChange();">&gt;&gt; 結合テーブルもインポートする</a></div>
+
+        <div id="relation_tables" style="display: none; padding: 18px 0px;">
+          <table class="detail">
+            <tr>
+              <th style="color: #FFFFFF;">結合テーブル <span style="color: #CC0000">*</font></th>
+              <td>
+{literal}
+<select name="rt1" onChange="SyL.Ajax.Request.sendAsyncPost(url_script + '/Developer/Adm/Adm/Import/AjaxTableColumn.html', setTableColumnList, {'tid': this.options[this.selectedIndex].value, 'name': this.name});">
+{/literal}
+    {foreach from=$tables key=i item=table}
+<option value="{$i}">{$table}</option>
+    {/foreach}
+</select>
+</td>
+              <th style="color: #FFFFFF;">結合タイプ <span style="color: #CC0000">*</font></th>
+              <td><input type="radio" name="rtp1" value="1" checked />等結合 <input type="radio" name="rtp1" value="2" />外部結合 </td>
+            </tr>
+            <tr>
+              <th style="color: #FFFFFF;">メンテナンスADMテーブルのカラム <span style="color: #CC0000">*</font></th>
+              <td><select name="mtc1"><option value="">-- メンテナンスADMテーブルを選択してください --</select></td>
+              <th style="color: #FFFFFF;">結合テーブルのカラム <span style="color: #CC0000">*</font></th>
+              <td><select name="rtc1"><option value="">-- 結合テーブルを選択してください --</select></td>
+            </tr>
+            <tr>
+              <th style="color: #FFFFFF;">結合条件</th>
+              <td colspan="3">
+                <input type="button" value=" 追加 " onClick="addTableJoin('1');" />&nbsp;<input type="button" value=" クリア " onclick="clearTableJoin('1');" />
+                <input type="hidden" name="rtcth1" value="" />
+                <div id="rtct1" style="padding: 10px; display: none;"></div>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="text-align: center;">
+          <input type="submit" value="インポート実行" />
+        </div>
+        <br />
+{else}
+        <div class="alert">ADMテーブルが見つかりませんでした。<br /><a href="{$url_script}/Developer/Adm/Admtable/Import/">ADMテーブル管理</a>からスキーマを登録してください</div>
+{/if}
+        <div style="text-align: center;">
+          <a href="{$url_script}/Developer/Adm/Adm/">戻る</a>
+        </div>
+
+      </div> <!-- // end list -->
+
+      </form>

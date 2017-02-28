@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+<meta http-equiv="content-type" content="text/html;charset=EUC-JP" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<link rel="stylesheet" type="text/css" href="/aquarium/css/admin.css" />
+<title>AQUARIUM</title>
+<script type="text/javascript" src="/aquarium/admin.php/aq_ajax.html"></script>
+<script type="text/javascript" src="/aquarium/js/dtree/dtree.js"></script>
+</head>
+
+<body>
+
+<div id="header">
+  <div id="header_menu">
+    [ ログイン: {$aq_login_user_name} ]&nbsp;
+    <ul>
+      <li><a href="javascript: void(0);" onclick="window.open('/aquarium/admin.php/Popup/Filemanager/');">ファイルマネージャ</a></a></li>
+      <li><a href="/aquarium/admin.php/public/sitemap/">サイトマップ</a></a></li>
+      <li><a href="/aquarium/admin.php/Aq_clear.html">キャッシュクリア</a></li>
+      <li class="last"><a href="/aquarium/login.php/logout.html">ログアウト</a></li>
+    </ul>
+  </div>
+  <div id="header_title">
+    <h1>{$aq_title}</h1>
+  </div>
+</div>
+
+<div id="container">
+  <div id="menu">
+    <div id="menu_title">メニュー</div>
+    <div id="menu_directory">
+{include file=$_MENU_}
+    </div>
+  </div>
+  <div id="main">
+    <div id="main_pankuzu">
+{if count($aq_menu_pankuzu) > 1}
+      <img src="/aquarium/images/icon_pankuzu.gif" border="0" />
+  {foreach name=pankuzu from=$aq_menu_pankuzu item=pankuzu}
+    {if $smarty.foreach.pankuzu.last}
+      {$pankuzu.0}
+    {else}
+      <a href="{$pankuzu.1}">{$pankuzu.0}</a>&nbsp;&gt;
+    {/if}
+  {/foreach}
+{else}
+&nbsp;
+{/if}
+    </div>
+
+    <div id="main_contents">
+{include file=$_CONTENTS_}
+    </div><!-- // end main_contents -->
+  </div>
+</div>
+
+<div id="footer">
+  <div id="footer_contents">AQUARIUM on SyL Framework {$smarty.const.SYL_VERSION}<br>Copyright (c) {$aq_Y} k.watanabe All rights reserved. </div>
+</div>
+
+</body>
+
+</html>

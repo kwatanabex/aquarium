@@ -1,0 +1,34 @@
+
+      <div class="main_contents_list">
+{if count($results) > 0}
+        <table class="list">
+          <tr>
+            <th class="list_icon"><img src="/aquarium/images/icon_doc.gif" width="16" height="16" border="0" /></th>
+            <th>メニュー名</th>
+            <th style="text-align: center;">表示フラグ</th>
+            <th>URL</th>
+            <th style="text-align: center;">ADM</th>
+          </tr>
+  {foreach from=$results key=i item=row}
+    {if $row.0 > 0}
+          <tr class={if $i%2 == 0}"td1"{else}"td2"{/if}>
+            <td class="list_icon"><a href="{$url_script}{$url_upd_base}{$row.0}"><img src="/aquarium/images/icon_upd.gif" width="16" height="16" border="0" /></a></td>
+            <td><a href="{$url_script}{$url_vew_base}{$row.0}">{$row.2|escape:"html"}</a></td>
+      {if $row.3}
+            <td style="text-align: center;">表示</td>
+      {else}
+            <td style="text-align: center;">非表示</td>
+      {/if}
+            <td><a href="{$url_script}{$row.4}">{$url_script}{$row.4|escape:"html"}</a></td>
+            <td style="text-align: center;"><a href="{$url_script}{$url_adm_base}{$row.0}">更新</a></td>
+          </tr>
+    {/if}
+  {/foreach}
+        </table>
+{else}
+        <div class="alert">データがありませんでした</div>
+{/if}
+      </div> <!-- // end list -->
+
+      <div style="padding: 20px; text-align: center;"><a href="{$url_script}/Config/Menu/">一覧に戻る</a></div>
+

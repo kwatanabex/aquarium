@@ -1,0 +1,198 @@
+{literal}
+<script type="text/javascript">
+<!--
+function viewSearch(b)
+{
+  if (document.getElementById('main_contents_search').style.display == "none") {
+    document.getElementById('main_contents_search').style.display = "block";
+    b.value = "検索非表示";
+  } else {
+    document.getElementById('main_contents_search').style.display = "none";
+    b.value = "検索表示";
+  }
+}
+
+function deletes(name, alert_flag)
+{
+  var f = document.form_list;
+  if (!f.elements[name]) {
+    return;
+  }
+
+  var len = f.elements[name].length;
+  if (len) {
+    var checked = false;
+    for (var i=0; i<len; i++) {
+      if (f.elements[name][i].checked) {
+        checked = true;
+        break;
+      }
+    }
+    if (!checked) {
+      alert("削除チェックボックスをチェックしてください");
+      return;
+    }
+  } else {
+    if (!f.elements[name].checked) {
+      alert("削除チェックボックスをチェックしてください");
+      return;
+    }
+  }
+
+  if (!alert_flag || confirm("チェックしたレコードを削除します。よろしいですか？")) {
+    f.submit();
+  }
+}
+
+//-->
+</script>
+{/literal}
+
+      <div class="main_contents_function">
+        <table>
+          <form name="form_function">
+          <tr>
+            <td class="pages">
+{if count($links)}
+          全 {$max_page}ページ&nbsp;
+  {if $current_page > 1}
+          <a href="{$url_lst}?page=1&sort={$current_sort|escape:"url"}{$search_parameter}">&lt;&lt;</a>
+          <a href="{$url_lst}?page={$current_page-1}&sort={$current_sort|escape:"url"}{$search_parameter}">&lt;&nbsp;PREV</a>
+  {else}
+          &lt;&nbsp;PREV
+  {/if}
+  {foreach from=$links item=link}
+    {if $link == $current_page}
+          |&nbsp;&nbsp;<b>{$link}</b>&nbsp;
+    {else}
+          |&nbsp;&nbsp;<a href="{$url_lst}?page={$link}&sort={$current_sort|escape:"url"}{$search_parameter}">{$link}</a>&nbsp;
+    {/if}
+  {/foreach}
+          |
+  {if $max_page > $current_page}
+          <a href="{$url_lst}?page={$current_page+1}&sort={$current_sort|escape:"url"}{$search_parameter}">NEXT&nbsp;&gt;</a>
+          <a href="{$url_lst}?page={$max_page}&sort={$current_sort|escape:"url"}{$search_parameter}">&gt;&gt;</a>
+  {else}
+          NEXT&nbsp;&gt;
+  {/if}
+{/if}
+            </td>
+            <td class="buttons">&nbsp;
+          <input type="button" value="全URL一覧" onClick="window.location.href='{$url_script}/Config/Menu/AllMenuList.html?kn={$key_name}';" />
+{if $enable_new}
+          <input type="button" value="&nbsp;&nbsp;新規&nbsp;&nbsp;" onClick="window.location.href='{$url_script}/Config/Menu/Prenew.html';" />
+{/if}
+{if $enable_del && (count($links) > 0)}
+          <input type="button" value="&nbsp;&nbsp;削除&nbsp;&nbsp;" onClick="deletes('{$key_name}[]', {if $view_alert}true{else}false{/if});" />
+{/if}
+{if (count($form.elements) > 0) && (count($links) > 0)}
+          <input type="button" value={if $search_view}"検索非表示"{else}"検索表示"{/if} onClick="viewSearch(this);" />
+{/if}
+            </td>
+          </tr>
+          </form>
+        </table>
+      </div> <!-- // end page_link -->
+
+{if count($form.elements) > 0}
+    <div id="main_contents_search" {if !$search_view}style="display: none"{/if}>
+      <table class="detail">
+        <form name="form_search">
+  {foreach from=$form.elements item=element}
+    {if $element.cols == '0'}
+        <tr>
+          <th>{$element.label}</th>
+          <td>{$element.html}&nbsp;</td>
+    {elseif $element.cols == '1'}
+          <th>{$element.label}</th>
+          <td>{$element.html}&nbsp;</td>
+        </tr>
+    {/if}
+  {/foreach}
+        <tr>
+          <td colspan="4" style="text-align: right"><input type="submit" value="　検索　" />&nbsp;<input type="button" value=" クリア " onClick="" /></td>
+        </tr>
+        </form>
+      </table>
+    </div> <!-- // end search -->
+{/if}
+
+      <div class="main_contents_list">
+{if count($results) > 0}
+        <table class="list">
+          <form name="form_list" method="post" action="{$url_del}">
+          <tr>
+{if $primary_link_parameters}
+  {if $enable_del}
+            <th class="list_icon"><img src="/aquarium/images/icon_del.gif" width="16" height="16" border="0" /></th>
+  {/if}
+  {if $enable_upd}
+            <th class="list_icon"><img src="/aquarium/images/icon_doc.gif" width="16" height="16" border="0" /></th>
+  {/if}
+{/if}
+{foreach from=$headers item=values}
+            <th><a href="{$url_lst}?sort={$values.sortlink|escape:"url"}{$search_parameter}">{$values.name|escape:"html"}</a></th>
+{/foreach}
+            <th>ADM</th>
+          </tr>
+  {foreach from=$results key=i item=row}
+          <tr class={if $i%2 == 0}"td1"{else}"td2"{/if}>
+    {if $primary_link_parameters.$i}
+      {if $enable_del}
+            <td class="list_icon"><input type="checkbox" name="{$key_name}[]" value="{$primary_link_parameters.$i|escape:"html"}" /></td>
+      {/if}
+      {if $enable_upd}
+            <td class="list_icon"><a href="{$url_upd}?{$key_name}={$primary_link_parameters.$i|escape:"url"}"><img src="/aquarium/images/icon_upd.gif" width="16" height="16" border="0" /></a></td>
+      {/if}
+    {/if}
+
+    {foreach from=$headers key=name item=data}
+      {if $primary_link_parameters.$i && $enable_vew && ($name == $primary_name)}
+            <td><a href="{$url_vew}?{$key_name}={$primary_link_parameters.$i|escape:"url"}">{$row.$name|escape:"html"}</a></td>
+      {else}
+            <td>{$row.$name|escape:"html"}</td>
+     {/if}
+    {/foreach}
+            <td><a href="{$url_script}/Config/Menu/UpdateAdm.html?id={$primary_link_parameters.$i|escape:"url"}">更新</a></td>
+          </tr>
+  {/foreach}
+          </form>
+        </table>
+{else}
+        <div class="alert">データがありませんでした</div>
+{/if}
+      </div> <!-- // end list -->
+
+{if count($results) > 0}
+      <div class="main_contents_function">
+        <table>
+          <tr>
+            <td class="pages">
+{if count($links)}
+        全 {$max_page}ページ &nbsp;
+  {if $current_page > 1}
+        <a href="{$url_lst}?page=1&sort={$current_sort|escape:"url"}{$search_parameter}">&lt;&lt;</a>
+        <a href="{$url_lst}?page={$current_page-1}&sort={$current_sort|escape:"url"}{$search_parameter}">&lt;&nbsp;PREV</a>
+  {else}
+        &lt;&nbsp;PREV
+  {/if}
+  {foreach from=$links item=link}
+    {if $link == $current_page}
+        |&nbsp;&nbsp;<b>{$link}</b>&nbsp;
+    {else}
+        |&nbsp;&nbsp;<a href="{$url_lst}?page={$link}&sort={$current_sort|escape:"url"}{$search_parameter}">{$link}</a>&nbsp;
+    {/if}
+  {/foreach}
+        |
+  {if $max_page > $current_page}
+        <a href="{$url_lst}?page={$current_page+1}&sort={$current_sort|escape:"url"}{$search_parameter}">NEXT&nbsp;&gt;</a>
+        <a href="{$url_lst}?page={$max_page}&sort={$current_sort|escape:"url"}{$search_parameter}">&gt;&gt;</a>
+  {else}
+        NEXT&nbsp;&gt;
+  {/if}
+{/if}
+            </td>
+          </tr>
+        </table>
+      </div> <!-- // end page_link -->
+{/if}

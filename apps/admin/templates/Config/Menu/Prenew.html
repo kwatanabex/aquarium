@@ -1,0 +1,94 @@
+{literal}
+<script type="text/javascript">
+<!--
+
+function checkAdm(f)
+{
+  return true;
+}
+
+//-->
+</script>
+{/literal}
+
+      <form name="form_detail" method="post" action="{$url_script}/Config/Menu/New.html" onSubmit="return checkAdm(this);">
+      <input type="hidden" name="REDIRECT_FLAG" value="0" />
+      <input type="hidden" name="DISPLAY_FLAG" value="1" />
+      <input type="hidden" name="MENU_PARENT_ID" value="" />
+
+      <div class="main_contents_list">
+        <table class="detail">
+          <tr>
+            <th style="color: #FFFFFF;">メニュー名<span style="color: #CC0000">*</font></th>
+            <td colspan="2"><input size="30" name="MENU_NAME" type="text" value="" /></td>
+          </tr>
+          <tr>
+            <th style="color: #FFFFFF;">URL名<span style="color: #CC0000">*</font></th>
+            <td colspan="2"><input size="30" name="MENU_URL_NAME" type="text" value="" /><br /><span class="note">※URLの一部となります。 例） /aquarium/admin.php/Config/<span style="color: #CC0000;">Menu</span>/<br />※半角英数と「_」のみ使用可能。先頭は自動的に大文字に変換されます。</span></td>
+          </tr>
+          <tr>
+            <th style="color: #FFFFFF;">親メニュー</th>
+            <td>
+              右のツリーから親メニューを選択してください。<br />
+                <input size="30" name="PARENT_MENU_NAME" type="text" value="" readonly /><br />
+                <span class="note" style="color: #CC0000">※未選択の場合、最上位メニューとして登録されます。</span>
+            </td>
+            <td>
+<script type="text/javascript">
+<!--
+var url_script = "{$url_script}";
+{literal}
+function setParentMenu(mid, mname)
+{
+  document.form_detail.elements['MENU_PARENT_ID'].value = mid;
+  document.form_detail.elements['PARENT_MENU_NAME'].value = mname;
+  //document.getElementById('parent_menu_name').innerHTML = mname;
+}
+
+var admd = new dTree('admd');
+admd.config.useCookies = false;
+
+for (key in admd.icon) {
+  admd.icon[key] = "/aquarium/js/dtree/" + admd.icon[key];
+}
+admd.icon.root = "/aquarium/images/icon_home.gif";
+{/literal}
+
+{foreach from=$menu_list item=menu}
+  {if $menu.0 == 0}
+  admd.add({$menu.0}, {$menu.1}, "{$menu.2}", "", "{$menu.2}", null, "/aquarium/images/icon_mua.gif", "/aquarium/images/icon_mua.gif", false);
+  {else}
+    {if $menu.3}
+      admd.add({$menu.0}, {$menu.1}, "{$menu.2} ({$menu.5})", "javascript:setParentMenu({$menu.0}, '{$menu.2}');", "{$menu.2}", null, "/aquarium/images/icon_mua.gif", "/aquarium/images/icon_mua.gif", false);
+    {else}
+      admd.add({$menu.0}, {$menu.1}, "{$menu.2} ({$menu.5})", "javascript:setParentMenu({$menu.0}, '{$menu.2}');", "{$menu.2}", null, "/aquarium/images/icon_mua_hidden.gif", "/aquarium/images/icon_mua_hidden.gif", false);
+    {/if}
+  {/if}
+{/foreach}
+
+document.write(admd);
+
+//-->
+</script>
+<span class="note">※メニュー名の括弧書きの数値は、並び順です。</span>
+            </td>
+          </tr>
+          <tr>
+            <th style="color: #FFFFFF;">並び順<span style="color: #CC0000">*</font></th>
+            <td colspan="2"><input size="30" name="MENU_ORDER" type="text" value="100" /></td>
+          </tr>
+        </table>
+        <br />
+
+        <div style="text-align: center;">
+          <input type="submit" value="&nbsp;&nbsp;次へ&nbsp;&nbsp;" />
+        </div>
+        <br />
+
+        <div style="text-align: center;">
+          <a href="{$url_script}/Config/Menu/">戻る</a>
+        </div>
+
+      </div> <!-- // end list -->
+
+      </form>

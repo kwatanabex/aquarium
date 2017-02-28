@@ -1,0 +1,132 @@
+  <div id="menu">
+    <div id="menu_title">ディレクトリ</div>
+    <div id="menu_directory">
+<script type="text/javascript">
+<!--
+  var fd = new dTree('fd');
+  fd.config.useCookies = false;
+
+{literal}
+  for (key in fd.icon) {
+    fd.icon[key] = "/aquarium/js/dtree/" + fd.icon[key];
+  }
+  fd.icon.root = "/aquarium/js/dtree/img/folderopen.gif";
+{/literal}
+
+{foreach from=$result_dirs key=i item=dir}
+  fd.add({$i}, {$dir.0}, "{$dir.1}", "{$dir.2}", "{$dir.2}", null, "/aquarium/js/dtree/img/folder.gif", "/aquarium/js/dtree/img/folderopen.gif", {$dir.3});
+{/foreach}
+
+  document.write(fd);
+
+//-->
+</script>
+
+<script type="text/javascript">
+<!--
+{if $js_callback}
+var js_callback = window.opener.{$js_callback};
+{literal}
+function selectFile(file)
+{
+  if (window.opener) {
+    js_callback(file);
+    window.close();
+  } else {
+    alert("親ウインドウがありません");
+  }
+}
+{/literal}
+{/if}
+
+{literal}
+function checkCreateDirectory(f)
+{
+  if (f.nd.value == "") {
+    f.nd.focus();
+    alert("作成するディレクトリ名を入力してください");
+    return false;
+  }
+  return confirm("選択されているディレクトリ内に新しいディレクトリ（" + f.nd.value + "）を作成します。\nよろしいですか？");
+
+}
+{/literal}
+//-->
+</script>
+
+<br /><br />
+
+    </div>
+  </div>
+
+  <div id="main">
+    <div id="main_pankuzu">
+      <img src="/aquarium/images/icon_pankuzu.gif" border="0" />&nbsp;現在のディレクトリ: /
+{foreach from=$current_dirs_link item=dir}
+  <a href="{$dir.link}">{$dir.name}</a> /
+{/foreach}
+    </div>
+    <div id="main_contents">
+      <div class="main_contents_function">
+        <table>
+          <form>
+          <tr>
+            <td class="pages">プロセスユーザー: {$process_user}</td>
+            <td class="buttons">&nbsp;<input type="button" value="ﾃﾞｨﾚｸﾄﾘ作成" onClick="document.getElementById('main_contents_function1').style.display = 'block';" /></td>
+          </tr>
+          </form>
+        </table>
+      </div>
+{if $is_writable}
+      <div id="main_contents_function1" class="main_contents_function" style="display: none;">
+        <table>
+          <form method="post" onSubmit="return checkCreateDirectory(this);">
+  {foreach from=$etc_parameters key=name item=value}
+          <input type="hidden" name="{$name}" value="{$value|escape:"html"}" />
+  {/foreach}
+          <tr>
+            <td class="pages">作成するディレクトリ名: <input type="text" name="nd" size="20" /></td>
+            <td class="buttons">&nbsp;<input type="submit" name="action_nd" value="&nbsp;&nbsp;実行&nbsp;&nbsp;" />
+            </td>
+          </tr>
+          </form>
+        </table>
+      </div>
+{else}
+      <div id="main_contents_function1" style="display: none; padding-bottom: 4px;">
+        <div class="alert">プロセスユーザー({$process_user})には、このディレクトリに対しての書き込み権限がありません。</div>
+      </div>
+{/if}
+      <div id="main_contents_list">
+        <table class="list">
+          <tr>
+{if $is_select && $js_callback}
+            <th style="padding: 4px; text-align: center; width: 40px;">&nbsp;</th>
+{/if}
+            <th>ファイル名</th>
+            <th style="padding: 4px; text-align: right; width: 70px;">サイズ</th>
+            <th style="padding: 4px; text-align: center;">オーナー名</th>
+            <th style="padding: 4px; text-align: center; width: 70px;">権限</th>
+            <th style="padding: 4px; text-align: center; width: 140px;">更新日時</th>
+          </tr>
+{foreach from=$result_files key=i item=file}
+          <tr class="td{$i%2}">
+  {if $is_select && $js_callback}
+            <td style="padding: 4px; text-align: center; width: 40px;"><a href="javascript: void(0);" onClick="selectFile('{$file.path}')">選択</a></td>
+  {/if}
+  {if $file.type == "dir"}
+            <td style="padding: 4px;"><div class="dir">{$file.name|escape:"html"}</div></td>
+  {else}
+            <td style="padding: 4px;"><div class="file">{$file.name|escape:"html"}</div></td>
+  {/if}
+            <td style="padding: 4px; text-align: right; width: 70px;">{$file.size}</td>
+            <td style="padding: 4px; text-align: center;">{$file.owner|escape:"html"}</td>
+            <td style="padding: 4px; text-align: center; width: 70px;">{$file.perm}</td>
+            <td style="padding: 4px; text-align: center; width: 140px;">{$file.mtime}</td>
+          </tr>
+{/foreach}
+        </table>
+      </div>
+    </div>
+  </div>
+

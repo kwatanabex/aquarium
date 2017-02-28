@@ -1,0 +1,125 @@
+{literal}
+<script type="text/javascript">
+<!--
+
+function allAffect(f, name)
+{
+  if (!f.elements[name]) {
+    return;
+  }
+
+  var len = f.elements[name].length;
+  if (len) {
+    var checked = false;
+    for (var i=0; i<len; i++) {
+      if (f.elements[name][i].checked) {
+        checked = true;
+        break;
+      }
+    }
+
+    for (var i=0; i<len; i++) {
+      f.elements[name][i].checked = !checked;
+    }
+  } else {
+    f.elements[name].checked = !f.elements[name].checked;
+  }
+}
+
+function checkTables(f, name)
+{
+  if (!f.elements[name]) {
+    return false;
+  }
+
+  var len = f.elements[name].length;
+  if (len) {
+    var checked = false;
+    for (var i=0; i<len; i++) {
+      if (f.elements[name][i].checked) {
+        checked = true;
+        break;
+      }
+    }
+    if (!checked) {
+      alert("登録対象のスキーマを選択してください");
+      return false;
+    }
+  } else {
+    if (!f.elements[name].checked) {
+      alert("登録対象のスキーマを選択してください");
+      return false;
+    }
+  }
+
+  return confirm("チェックしたスキーマをADMテーブル用のメタデータとして登録します。\nよろしいですか？");
+}
+
+//-->
+</script>
+{/literal}
+
+      <form name="form_list" method="post" onSubmit="return checkTables(this, 'table[]');">
+
+      <div class="main_contents_function">
+        <table>
+          <tr>
+            <td style="line-height: 150%;">※ この一覧は以下のデータベース接続情報から取得しています。<br>
+              &nbsp;&nbsp;[ドライバ] {$dsn.driver}&nbsp;&nbsp;[ホスト] {$dsn.host}{if $dsn.port}:{$dsn.port}{/if}&nbsp;&nbsp;[データベース] {$dsn.db}&nbsp;&nbsp;[ユーザー] {$dsn.user}<br>
+            <span style="color: #CC0000">※外部キーが物理的に存在する場合、インポートは必ずマスタテーブルから行ってください。</span>
+            </td>
+            <td class="buttons">
+{if $all_registed}
+              &nbsp;
+{else}
+              <input type="button" value="全スキーマ選択／解除" onClick="allAffect(this.form, 'table[]');" />
+{/if}
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="main_contents_list">
+{if count($tables) > 0}
+        <table class="list">
+          <tr>
+            <th class="list_icon"><img src="/aquarium/images/icon_doc.gif" width="16" height="16" border="0" /></th>
+            <th style="color: #FFFFFF;">スキーマ名</th>
+            <th style="color: #FFFFFF;">タイプ</th>
+            <th style="color: #FFFFFF;">ステータス</th>
+          </tr>
+  {foreach from=$tables key=i item=table}
+          <tr class={if $i%2 == 0}"td1"{else}"td2"{/if}>
+    {if $table.regist == false}
+            <td class="list_icon"><input type="checkbox" name="table[]" value="{if $table.view}V{else}T{/if}.{$table.name|escape:"html"}" /></td>
+            <td>{$table.name|escape:"html"}</td>
+            <td>{if $table.view}ビュー{else}テーブル{/if}</td>
+            <td>未登録</td>
+    {else}
+            <td class="list_icon">&nbsp;</td>
+            <td>{$table.name|escape:"html"}</td>
+            <td>{if $table.view}ビュー{else}テーブル{/if}</td>
+            <td>登録済み</td>
+    {/if}
+
+          </tr>
+  {/foreach}
+        </table>
+        <br>
+
+{if $all_registed == false}
+        <div style="text-align: center;">
+          <input type="submit" value="インポート実行" />
+        </div>
+        <br>
+{/if}
+
+        <div style="text-align: center;">
+          <a href="{$url_script}/Developer/Adm/Admtable/">戻る</a>
+        </div>
+{else}
+        <div class="alert">データベース上にテーブル、またはビューが見つかりませんでした</div>
+{/if}
+      </div> <!-- // end list -->
+
+      </form>

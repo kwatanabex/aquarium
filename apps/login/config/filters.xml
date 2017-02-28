@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE syl-filters PUBLIC
+  "-//SyL Framework Development Project//DTD Filter Defines 1.0//JP"
+  "http://syl.jp/dtds/syl-filters_1_0.dtd">
+
+<!--
+  フィルタ設定ファイル（filters.xml）
+
+  フィルタは、共通の処理を個別のアクションから意識しないで行う場合に使用します。
+  フィルタには、
+    ・アクション前フィルタ (preAction)
+    ・アクション後フィルタ (postAction)
+    ・ビュー表示前フィルタ (preRender)
+    ・ビュー表示後フィルタ (postRender)
+  の4種類あります。
+-->
+<syl-filters>
+<!--
+  SyL情報表示フィルタ。有効にする場合は、enable="true"にしてください。
+  ※defines.xmlの定数 SYL_RESPONSE_LENGTH が無効「0」でないと表示されません。
+-->
+<filter name="info"
+        path="(.+)\.php"
+        class="SyL_FilterInfo"
+        file="framework/Filter/SyL_FilterInfo.php"
+        enable="false">
+  <postRender />
+</filter>
+</syl-filters>

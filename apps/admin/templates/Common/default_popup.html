@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+<meta http-equiv="content-type" content="text/html;charset=EUC-JP" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<link rel="stylesheet" type="text/css" href="/aquarium/css/admin_popup.css" />
+<title>AQUARIUM</title>
+<script type="text/javascript" src="/aquarium/admin.php/aq_ajax.html"></script>
+<script type="text/javascript" src="/aquarium/js/dtree/dtree.js"></script>
+</head>
+
+<body>
+
+<div id="header">
+  <div id="header_title">
+    <h1>{$aq_title}</h1>
+  </div>
+</div>
+
+<div id="container">
+{include file=$_CONTENTS_}
+</div>
+
+<div id="footer">
+  <div id="footer_contents">AQUARIUM on SyL Framework {$smarty.const.SYL_VERSION}<br>Copyright (c) {$aq_Y} k.watanabe All rights reserved. </div>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE syl-filters PUBLIC
+  "-//SyL Framework Development Project//DTD Filter Defines 1.0//JP"
+  "http://syl.jp/dtds/syl-filters_1_0.dtd">
+
+<!--
+  フィルタ設定ファイル（filters.xml）
+
+  フィルタは、共通の処理を個別のアクションから意識しないで行う場合に使用します。
+  フィルタには、
+    ・アクション前フィルタ (preAction)
+    ・アクション後フィルタ (postAction)
+    ・ビュー表示前フィルタ (preRender)
+    ・ビュー表示後フィルタ (postRender)
+  の4種類あります。
+-->
+<syl-filters>
+
+<filter name="auth"
+        path="(.+)\.php"
+        class="SyL_FilterAuth"
+        file="framework/Filter/SyL_FilterAuth.php"
+        enable="true">
+  <preAction>
+    <arg type="component" reference="true">data</arg>
+  </preAction>
+  <postAction>
+    <arg type="component" reference="true">data</arg>
+  </postAction>
+</filter>
+
+<filter name="menu_handling"
+        path="(.+)\.php"
+        class="Aq_HandlingFilter"
+        file="Filter/Aq_HandlingFilter.php"
+        enable="true">
+  <preAction>
+    <arg type="component" reference="true">data</arg>
+    <arg type="component" reference="true">context</arg>
+  </preAction>
+  <postAction>
+    <arg type="component" reference="true">data</arg>
+    <arg type="component" reference="true">context</arg>
+  </postAction>
+</filter>
+
+</syl-filters>

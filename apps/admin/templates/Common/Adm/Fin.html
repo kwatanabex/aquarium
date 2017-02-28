@@ -1,0 +1,17 @@
+    <div id="detail" style="padding: 20px; text-align: center;">
+{if $adm_action == 'new'}
+      判峡が窗位しました。
+{elseif $adm_action == 'upd'}
+      构糠が窗位しました。
+{elseif $adm_action == 'del'}
+      猴近が窗位しました。
+{/if}
+    </div>
+
+    <div style="padding: 20px; text-align: center;">
+{if $url_lst == $url_lst_u}
+        <a href="{$url_lst}">办枉に提る</a>
+{else}
+        <a href="{$url_lst_u}&adm_u={$cu|escape:"url"}">办枉に提る</a>
+{/if}
+    </div>

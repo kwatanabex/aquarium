@@ -1,0 +1,48 @@
+    <div id="aquarium-nologin-area">
+      <div id="aquarium-login"></div>
+    </div>
+    <div style="font-size: 83%;padding: 10px 0px;">※AQUARIUMを使用するには、JavaScript／クッキーを有効にしてください。</div>
+
+<script type="text/JavaScript">
+<!--
+var formName = "loginForm";
+var userName = "{$login_id_name}";
+var passwordName = "{$password_name}";
+
+{literal}
+var login = new SyL.UI.Form.Login("aquarium-login", '/aquarium/js.php/Ajax/Login.js');
+login.setAjax(true);
+login.setPostLoginCallback(function(data){
+  login.displayErrorMessage("ログインIDかパスワードが一致しません");
+});
+{/literal}
+
+/*
+var login = new SyL.UI.Form.Login("aquarium-login");
+*/
+login.submitName = "ログイン";
+login.userNameLabel = "ログインID: ";
+login.passwordNameLabel = "パスワード: ";
+login.userName = userName;
+login.passwordName = passwordName;
+//login.setPasswordHash("{$challenge_code}", hex_md5);
+login.create(formName, "{$login_id|escape:"html"}");
+{if $login === false}
+login.displayErrorMessage("ログインIDかパスワードが一致しません");
+{/if}
+
+{literal}
+function focusUser() {login.getUserElement().style.backgroundColor = "#FFFFFF";}
+function blurUser()  {login.getUserElement().style.backgroundColor = "#F5FAFB";}
+function focusPassword() {login.getPasswordElement().style.backgroundColor = "#FFFFFF";}
+function blurPassword()  {login.getPasswordElement().style.backgroundColor = "#F5FAFB";}
+{/literal}
+
+SyL.Event.Listener.add(login.getUserElement(), "focus", focusUser);
+SyL.Event.Listener.add(login.getUserElement(), "blur",  blurUser);
+SyL.Event.Listener.add(login.getPasswordElement(), "focus", focusPassword);
+SyL.Event.Listener.add(login.getPasswordElement(), "blur",  blurPassword);
+
+//-->
+</script>
+

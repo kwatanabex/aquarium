@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE syl-layouts PUBLIC
+  "-//SyL Framework Development Project//DTD Layout Defines 1.0//JP"
+  "http://syl.jp/dtds/syl-layouts_1_0.dtd">
+
+<!--
+  レイアウト設定ファイル（layouts.xml）
+
+  レイアウト機能を使用する場合に設定します。
+-->
+<syl-layouts>
+
+<layout name="default"
+        file="common/default.html"
+        enable="true">
+  <content name="_CONTENTS_" />
+
+  <params>
+    <action path="/Index.php">
+      <param name="html_title" value="AQUARIUM - ログイン" />
+    </action>
+    <action path="/Logout.php">
+      <param name="html_title" value="AQUARIUM - ログアウト" />
+    </action>
+    <action path="/Error.php">
+      <param name="html_title" value="AQUARIUM - セッションエラー" />
+    </action>
+  </params>
+
+</layout>
+
+</syl-layouts>

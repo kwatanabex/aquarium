@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE syl-defines PUBLIC
+  "-//SyL Framework Development Project//DTD Constant Defines 1.0//JP"
+  "http://syl.jp/dtds/syl-defines_1_0.dtd">
+
+<!--
+  アプリケーション定数設定ファイル（defines.xml）
+
+  アプリケーションごと固有の定数を定義できます。
+  また、「プロジェクト定数設定ファイル」と同名の定数があると、
+  オーバーライド（上書き）します。
+
+  例）
+  - defines.xml
+    <define name="EXAMPLE">test</define>
+  - アクション側
+    echo EXAMPLE; // test
+-->
+<syl-defines>
+
+</syl-defines>

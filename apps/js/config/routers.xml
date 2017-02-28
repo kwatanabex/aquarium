@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE syl-filters PUBLIC
+  "-//SyL Framework Development Project//DTD Filter Routers 1.0//JP"
+  "http://syl.jp/dtds/syl-routers_1_0.dtd">
+
+<!--
+  ルーティング設定ファイル（routers.xml）
+
+  PATH_INFOに対する実行するアクションやテンプレートファイルの
+  関連付けを行うことができます。
+-->
+<syl-routers>
+
+<router requestAction="/Login\.php" 
+        viewType="js.login" />
+
+<router requestAction="/Ajax/(.+)\.php" 
+        viewType="json" />
+
+</syl-routers>

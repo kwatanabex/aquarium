@@ -1,0 +1,103 @@
+<script type="text/javascript">
+<!--
+var url_script = "{$url_script}";
+
+{literal}
+function viewSql(b)
+{
+  if (document.getElementById('sql_input').style.display == "none") {
+    document.getElementById('sql_input').style.display = "block";
+    b.value = "SQL入力非表示";
+  } else {
+    document.getElementById('sql_input').style.display = "none";
+    b.value = "SQL入力表示";
+  }
+}
+
+function displaySqlResult(r)
+{
+  var result = r['result'];
+  var error  = r['error'];
+  var error_message = r['error_message'];
+  var html = '';
+
+  if (result == null) {
+    document.getElementById('main_contents_list').innerHTML = '';
+    document.getElementById('main_contents_list').style.display = "none";
+  } else {
+    if (error) {
+      html += "<div class='alert'>" + error_message + "</div>";
+    } else if (result == true) {
+      html += "<div style='padding: 6px 0px;'>SQLの実行が完了しました</div>";
+    } else {
+      var len = result.length;
+      if (len == 0) {
+        html += "<div class='alert'>データがありませんでした</div>";
+      } else {
+        var fields = [];
+        for (var i in result[0]) {
+          fields.push(i);
+        }
+
+        html += '<table class="list">';
+        html += '<tr>';
+        for (var i=0; i<fields.length; i++) {
+          html += '<th>' + fields[i] + '</th>';
+        }
+        html += '</tr>';
+
+        for (var i=0; i<len; i++) {
+          html += '<tr class="td' + (i%2) + '">';
+          for (var j=0; j<fields.length; j++) {
+            html += '<td>' + result[i][fields[j]] + '</td>';
+          }
+          html += '</tr>';
+        }
+        html += '</table>';
+      }
+    }
+
+    document.getElementById('main_contents_list').innerHTML = html;
+    document.getElementById('main_contents_list').style.display = "block";
+  }
+}
+{/literal}
+
+//-->
+</script>
+      <div class="main_contents_function">
+        <table>
+          <form name="form_function">
+          <tr>
+            <td style="line-height: 150%;">※ ここで入力するSQLは、以下のデータベース接続情報で実行されます。<br>
+              &nbsp;&nbsp;[ドライバ] {$dsn.driver}&nbsp;&nbsp;[ホスト] {$dsn.host}{if $dsn.port}:{$dsn.port}{/if}&nbsp;&nbsp;[データベース] {$dsn.db}&nbsp;&nbsp;[ユーザー] {$dsn.user}
+            </td>
+            <td class="buttons"><input type="button" value="SQL入力非表示" onClick="viewSql(this);" /></td>
+          </tr>
+          </form>
+        </table>
+
+        <div id="sql_input" style="padding-top: 6px;">
+          <table class="detail">
+            <tr>
+              <th style="color: #FFFFFF;">SQL入力</th>
+            </tr>
+            <tr>
+              <td>
+{literal}
+<form name="form_detail" onSubmit="SyL.Ajax.Request.sendAsyncPost(url_script + '/Developer/Sql/AjaxSql.html', displaySqlResult, {'sql': this.sql.value}); return false;">
+{/literal}
+<textarea name="sql" cols="20" rows="10"></textarea>
+<div style="text-align: right;"><input type="submit" value="SQL実行" /></div>
+</form>
+</td>
+            </tr>
+            <tr>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div> <!-- // end list -->
+
+      <div class="main_contents_list" id="main_contents_list" style="display: none;">
+      </div> <!-- // end list -->

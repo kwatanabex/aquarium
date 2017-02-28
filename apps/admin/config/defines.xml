@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE syl-defines PUBLIC
+  "-//SyL Framework Development Project//DTD Constant Defines 1.0//JP"
+  "http://syl.jp/dtds/syl-defines_1_0.dtd">
+
+<!--
+  アプリケーション定数設定ファイル（defines.xml）
+
+  アプリケーションごと固有の定数を定義できます。
+  また、「プロジェクト定数設定ファイル」と同名の定数があると、
+  オーバーライド（上書き）します。
+
+  例）
+  - defines.xml
+    <define name="EXAMPLE">test</define>
+  - アクション側
+    echo EXAMPLE; // test
+-->
+<syl-defines>
+  <define name="AQ_MENU_ROOT_NAME">データソースホーム</define>
+  <define name="AQ_FILEMANAGER_ROOT_DIR">{SYL_PROJECT_DIR}</define>
+  <!-- 必ず SYL_PROJECT_DIR /lib の下のディレクトリに -->
+  <define name="AQ_ADM_GENERATE_CLASS_DIR">{SYL_PROJECT_DIR}/lib/GenerateAdmClass</define>
+  <define name="AQ_ADM_GENERATE_PACKAGE">GenerateAdmClass</define>
+  <!-- 必ず _{TABLE_ID} を最後につける -->
+  <define name="AQ_GENERATED_TABLE_CLASS_PREFIX">AQ_GENERATED_TABLE_CLASS_{TABLE_ID}</define>
+  <define name="AQ_GENERATED_ADM_CLASS_PREFIX">AQ_GENERATED_ADM_CLASS_{ADM_ID}</define>
+</syl-defines>

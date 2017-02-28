@@ -1,0 +1,10 @@
+<div id="main_contents_index">
+{foreach from=$sitemap_index item=menu}
+  {if $menu.0 >= 0}
+  <div style="padding-left: {$menu.0*20}px;" class="list_box">
+    <h4><a href="{$menu.2}">{$menu.1}</a></h4>
+    <p>{$menu.3}</p>
+  </div>
+  {/if}
+{/foreach}
+</div>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE syl-actions PUBLIC
+  "-//SyL Framework Development Project//DTD Action Defines 1.0//JP"
+  "http://syl.jp/dtds/syl-actions_1_0.dtd">
+
+<syl-actions>
+
+<!--
+<area
+  適用エリア定義
+  path(任意) :
+    アクションクラスに対するコンポーネント適用対象パス。デフォルトは「.*」
+    正規表現の使用可能 ^(...)$ は既に組み込まれている
+    ※URLやPATH_INFOではない
+  template(必須) : テンプレートファイル
+    $1..N はpathの正規表現との一致関係
+  viewType(任意) : ビュータイプ　デフォルトはdefaultビュー
+    customize時はカスタマイズビュー
+    layout時は、レイアウトビュー
+  customizedViewFile(任意)  : 独自のビューファイル
+    アプリケーションルートからのパス
+  customizedViewClass(任意) : 独自のビューファイル内のクラス名
+  enable(任意)  : 使用判定 true or false デフォルトtrue
+
+<area path="">
+  <component ...>
+
+  </component>
+
+  <action ...>
+  
+  </action>
+  
+</area>
+-->
+
+<action path="(.+)\.php"
+        method="execute{action}">
+</action>
+
+</syl-actions>

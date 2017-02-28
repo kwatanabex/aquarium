@@ -1,0 +1,249 @@
+      <div id="detail">
+        <table class="detail">
+{foreach from=$form.elements item=element}
+{if $element.cols == '0'}
+          <tr>
+            <th>{$element.label}</th>
+            <td>{$element.html}&nbsp;</td>
+{elseif $element.cols == '1'}
+            <th>{$element.label}</th>
+            <td>{$element.html}&nbsp;</td>
+          </tr>
+{elseif $element.cols == '2'}
+          <tr>
+            <th>{$element.label}</th>
+            <td colspan="3">{$element.html}&nbsp;</td>
+          </tr>
+{/if}
+{/foreach}
+{if $enable_upd || $enable_del}
+          <form name="form_del" method="post" action="{$url_del}" {if $view_alert}onSubmit="return confirm('削除します。よろしいですか？');"{/if}>
+          <input type="hidden" name="{$key_name|escape:"html"}[]" value="{$key_value|escape:"html"}" />
+          <input type="hidden" name="adm_u" value="{$nu|escape:"html"}" />
+          <tr>
+            <td colspan="4" style="text-align: right;">
+  {if $enable_upd}
+              <input type="button" value="　更新　" onClick="window.location.href='{$url_upd}?{$key_name|escape:"url"}={$key_value|escape:"url"}&adm_u={$nu|escape:"url"}';">
+  {/if}
+  {if $enable_del}
+              <input type="submit" value="　削除　">
+  {/if}
+            </td>
+          </tr>
+          </form>
+{/if}
+        </table>
+      </div>
+      <div style="padding: 20px; text-align: center;">
+{if $url_lst == $url_lst_u}
+        <a href="{$url_lst}">一覧に戻る</a>
+{else}
+        <a href="{$url_lst_u}&adm_u={$cu|escape:"url"}">一覧に戻る</a>
+{/if}
+      </div>
+
+{if count($related_links) > 0}
+
+<script type="text/javascript">
+<!--
+{literal}
+  var keys  = {};
+  var keyq  = '';
+  var keyro = '';
+{/literal}
+  var nu = '{$nu}';
+
+{foreach from=$key_array key=name item=value}
+  keys['{$name}'] = '{$value}';
+  keyq  += (keyq != '') ? '&' : '';
+  keyq  += encodeURIComponent('{$name}') + '=' + encodeURIComponent('{$value}');
+  keyro += (keyro != '') ? encodeURIComponent("\t") : '';
+  keyro += encodeURIComponent('{$name}');
+{/foreach}
+
+//-->
+</script>
+
+{literal}
+<script type="text/javascript">
+<!--
+
+function getRelatedList(url, parameters)
+{
+  if (typeof(parameters) != "object") {
+    parameters = {};
+  }
+  parameters['adm_ajax'] = 'json';
+  for (var i in keys) {
+    parameters[i] = keys[i];
+  }
+  SyL.Ajax.Request.sendAsyncPost(url, displayRelatedList, parameters);
+}
+
+function deletes(f, name, alert_flag)
+{
+  if (!f.elements[name]) {
+    return;
+  }
+
+  var len = f.elements[name].length;
+  if (len) {
+    var checked = false;
+    for (var i=0; i<len; i++) {
+      if (f.elements[name][i].checked) {
+        checked = true;
+        break;
+      }
+    }
+    if (!checked) {
+      alert("削除チェックボックスをチェックしてください");
+      return;
+    }
+  } else {
+    if (!f.elements[name].checked) {
+      alert("削除チェックボックスをチェックしてください");
+      return;
+    }
+  }
+
+  if (!alert_flag || confirm("チェックしたレコードを削除します。よろしいですか？")) {
+    f.submit();
+  }
+}
+
+function displayRelatedList(r)
+{
+  if (!r['index'] || !document.getElementById('adm_r_title' + r['index'])) {
+    alert("関連データが存在しません");
+    return;
+  }
+
+  var index = r['index'];
+
+  // タイトル
+  document.getElementById('adm_r_title' + index).innerHTML = r['title'];
+  if (r['links'].length > 0) {
+    document.getElementById('adm_r_page_all' + index).innerHTML = "全 " + r['max_page'] + "ページ";
+
+    var prev = '&lt;&nbsp;PREV&nbsp;';
+    if (r['current_page'] > 1) {
+      prev  = '<a href="javascript: void(0);" onClick="getRelatedList(\'' + r['url_lst'] + '\', {\'page\': \'1\', \'sort\': \'' + r['current_sort'] + '\', \'adm_list_index\': ' + index + '});">&lt;&lt;</a>&nbsp;';
+      prev += '<a href="javascript: void(0);" onClick="getRelatedList(\'' + r['url_lst'] + '\', {\'page\': \'' + (parseInt(r['current_page'], 10) - 1) + '\', \'sort\': \'' + r['current_sort'] + '\', \'adm_list_index\': ' + index + '});">&lt;&nbsp;PREV</a>&nbsp;';
+    }
+
+    var link = '';
+    for (var i=0; i<r['links'].length; i++) {
+      if (r['links'][i] == r['current_page']) {
+        link += '|&nbsp;&nbsp;<b>' + r['links'][i] + '</b>&nbsp;';
+      } else {
+        link += '|&nbsp;&nbsp;<a href="javascript: void(0);" onClick="getRelatedList(\'' + r['url_lst'] + '\', {\'page\': \'' + r['links'][i] + '\', \'sort\': \'' + r['current_sort'] + '\', \'adm_list_index\': ' + index + '});">' + r['links'][i] + '</a>&nbsp;';
+      }
+    }
+    link += '|&nbsp;';
+
+    var next = 'NEXT&nbsp;&gt;';
+    if (r['max_page'] > r['current_page']) {
+      next  = '<a href="javascript: void(0);" onClick="getRelatedList(\'' + r['url_lst'] + '\', {\'page\': \'' + (parseInt(r['current_page'], 10) + 1) + '\', \'sort\': \'' + r['current_sort'] + '\', \'adm_list_index\': ' + index + '});">NEXT&nbsp;&gt;</a>&nbsp;';
+      next += '<a href="javascript: void(0);" onClick="getRelatedList(\'' + r['url_lst'] + '\', {\'page\': \'' + r['max_page'] + '\', \'sort\': \'' + r['current_sort'] + '\', \'adm_list_index\': ' + index + '});">&gt;&gt;</a>';
+    }
+
+    document.getElementById('adm_r_page_links' + index).innerHTML = prev + link + next;
+  }
+
+  var button = '';
+  if (r['enable_new']) {
+    button += '<input type="button" value="&nbsp;&nbsp;新規&nbsp;&nbsp;" onClick="window.location.href=\'' + r['url_new'] + '?' + keyq + '&adm_read_only=' + keyro + '&adm_u=' + encodeURIComponent(nu) + '\';" />';
+  }
+  if (r['enable_del'] && (r['links'].length > 0)) {
+    button += '&nbsp;<input type="button" value="&nbsp;&nbsp;削除&nbsp;&nbsp;" onClick="deletes(document.form_list' + index + ', \'' + r['key_name'] + '[]\', ' + (r['view_alert'] ? 'true' : 'false') + ');" />';
+  }
+  document.getElementById('adm_r_buttons' + index).innerHTML = button;
+
+  var table = '';
+  if (r['results'].length > 0) {
+    table += '<form name="form_list' + index + '" method="post" action="' + r['url_del'] + '">';
+    table += '<input type="hidden" name="adm_u" method="post" value="' + nu + '" />';
+    table += '<table class="list">';
+    table += '<tr>';
+    if (r['enable_del']) {
+      table += '<th class="list_icon"><img src="/aquarium/images/icon_del.gif" width="16" height="16" border="0" /></th>';
+    }
+    if (r['enable_upd']) {
+      table += '<th class="list_icon"><img src="/aquarium/images/icon_doc.gif" width="16" height="16" border="0" /></th>';
+    }
+
+    for (var i in r['headers']) {
+      table += '<th><a href="javascript: void(0);" onClick="getRelatedList(\'' + r['url_lst'] + '\', {\'sort\': \'' + r['headers'][i]['sortlink'] + '\', \'adm_list_index\': ' + index + '});">' + r['headers'][i]['name'] + '</a></th>';
+    }
+    table += '</tr>';
+
+    for (var i=0; i<r['results'].length; i++) {
+      table += '<tr class="' + ((i%2 == 0) ? 'td1' : 'td2') + '">';
+      if (r['enable_del']) {
+        table += '<td class="list_icon"><input type="checkbox" name="' + r['key_name'] + '[]" value="' + r['primary_link_parameters'][i] + '" /></td>';
+      }
+      if (r['enable_upd']) {
+        table += '<td class="list_icon"><a href="' + r['url_upd'] + '?' + r['key_name'] + '=' + encodeURIComponent(r['primary_link_parameters'][i]) + '&adm_read_only=' + keyro + '&adm_u=' + encodeURIComponent(nu) + '"><img src="/aquarium/images/icon_upd.gif" width="16" height="16" border="0" /></a></td>';
+      }
+
+      for (var j in r['headers']) {
+        if (r['enable_vew'] && (j == r['primary_name'])) {
+          table += '<td><a href="' + r['url_vew'] + '?' + r['key_name'] + '=' + encodeURIComponent(r['primary_link_parameters'][i]) + '&adm_u=' + encodeURIComponent(nu) + '">' + r['results'][i][j] + '</a></td>';
+        } else {
+          if (r['results'][i][j] == null) {
+            table += '<td>&nbsp;</td>';
+          } else {
+            table += '<td>' + r['results'][i][j] + '</td>';
+          }
+        }
+      }
+      table += '</tr>';
+    }
+    table += '</table>';
+    table += '</form>';
+  } else {
+    table += '<div class="alert">データがありませんでした</div>';
+  }
+
+  document.getElementById('adm_r_table' + index).innerHTML = table;
+}
+
+//-->
+</script>
+{/literal}
+
+
+<h2>関連データ</h2>
+
+{foreach from=$related_links key=i item=link}
+
+      <h3><div id="adm_r_title{$i}">(Now Loading...)</div></h3>
+      <div class="main_contents_function">
+        <table>
+          <form name="form_function{$i}">
+          <tr>
+            <td class="pages"><span id="adm_r_page_all{$i}"></span>&nbsp;<span id="adm_r_page_links{$i}"></span></td>
+            <td class="buttons"><div id="adm_r_buttons{$i}"></div></td>
+          </tr>
+          </form>
+        </table>
+      </div>
+      <div class="main_contents_list">
+        <div id="adm_r_table{$i}"></div>
+      </div>
+
+<br>
+
+<script type="text/javascript">
+<!--
+  getRelatedList('{$link}',
+  {literal}{{/literal}
+  'adm_list_index': '{$i}'
+  {literal}}{/literal}
+  );
+//-->
+</script>
+
+{/foreach}
+
+{/if}
